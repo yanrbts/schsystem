@@ -17,6 +17,7 @@ class Config(object):
     CELERY_BROKER_URL     = "redis://localhost:6379"
     CELERY_RESULT_BACKEND = "redis://localhost:6379"
     CELERY_HOSTMACHINE    = "celery@app-generator"
+    MIMOMESH_BASE_URL     = "http://192.168.1.87"
 
     # Set up the App SECRET_KEY
     SECRET_KEY  = os.getenv('SECRET_KEY', 'S3cret_999')

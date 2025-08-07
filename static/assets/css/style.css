@@ -22243,6 +22243,34 @@ select.form-control[data-multiselectsplitter-firstselect-selector], select.form-
   right: 0;
 }
 
+/* apps/static/style.css */
+.field-label-fixed-width {
+    min-width: 120px; /* 根据您的标签文本长度调整此值，确保所有标签都有足够的空间 */
+    flex-shrink: 0; /* 防止标签在空间不足时收缩 */
+    white-space: nowrap; /* 防止标签文本换行 */
+    text-align: right; /* 让标签文本右对齐，靠近数据 */
+}
+
+.form-control-compact,
+.form-select.form-control-compact {
+    max-width: 180px; /* 调整此值以控制输入框和下拉菜单的宽度 */
+    width: 100%; /* 确保在 max-width 范围内填充可用空间 */
+    flex-shrink: 1; /* 允许在必要时收缩 */
+}
+
+/* 确保只读文本不换行并处理溢出 */
+.card-body p.text-nowrap {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 针对 form-check 标签在 d-flex 行中对齐 */
+.form-check-label-inline {
+    margin-bottom: 0; /* 移除默认底部外边距 */
+    white-space: nowrap; /* 防止文本换行 */
+}
+
 /**  =====================
   23. Icon layouts css end
 ==========================  **/

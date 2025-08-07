@@ -62,16 +62,16 @@ class Group(db.Model):
     name = db.Column(db.String, unique=True, nullable=False)
     # 定义与 User 表的关系：一个 Group 可以有多个 User
     # backref='group' 会在 User 模型中自动创建一个 'group' 属性，指向所属的 Group 对象
-    users = relationship("User", backref="group", lazy="joined")
+    users = relationship("DevUser", backref="group", lazy="joined")
 
     def __repr__(self):
         return f"<Group(id={self.id}, name='{self.name}')>"
 
-class User(db.Model):
+class DevUser(db.Model):
     """
-    定义 User 表，包含用户基本信息和所属组，以及 IP 地址。
+    定义 DevUser 表，包含用户基本信息和所属组，以及 IP 地址。
     """
-    __tablename__ = 'users'
+    __tablename__ = 'devusers'
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True, nullable=False)
