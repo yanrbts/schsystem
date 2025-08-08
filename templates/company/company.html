@@ -6,7 +6,6 @@
 
 <div class="pc-container">
   <div class="pc-content">
-    <!-- [ breadcrumb ] start -->
     <div class="page-header">
       <div class="page-block">
         <div class="row align-items-center">
@@ -37,15 +36,14 @@
         </div>
       </div>
     </div>
-    <!-- [ breadcrumb ] end -->
-
-    <!-- [ Main Content ] start -->
     <div class="row">
       <div class="col-12">
         <div class="card">
           <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">所有公司</h5>
-            <a href="{{ url_for('device_blueprint.manage_companies') }}" class="btn btn-primary btn-sm">添加新公司</a>
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addCompanyModal">
+              添加新公司
+            </button>
           </div>
           <div class="card-body px-0 py-3">
             {% if companies %}
@@ -53,7 +51,7 @@
               <table class="table table-hover">
                 <thead>
                   <tr>
-                    <th>ID</th>
+                    {#<th>ID</th>#}
                     <th>公司名称</th>
                     <th>行政区</th>
                     <th>街道</th>
@@ -72,7 +70,7 @@
                 <tbody>
                   {% for company in companies %}
                   <tr>
-                    <td>{{ company.id }}</td>
+                    {#<td>{{ company.id }}</td>#}
                     <td>{{ company.com_name }}</td>
                     <td>{{ company.district | default('N/A') }}</td>
                     <td>{{ company.street | default('N/A') }}</td>
@@ -86,8 +84,8 @@
                     <td>{{ company.update_time.strftime('%Y-%m-%d %H:%M:%S') if company.update_time else 'N/A' }}</td>
                     <td>{{ company.sys_org_code | default('N/A') }}</td>
                     <td>
-                      <a href="{{ url_for('device_blueprint.manage_companies', edit_id=company.id) }}" class="btn btn-sm btn-info me-1">编辑</a>
-                      <form method="POST" action="{{ url_for('device_blueprint.manage_companies') }}" style="display:inline;" onsubmit="return confirm('确定要删除公司 \'{{ company.com_name }}\' 吗？');">
+                      <a href="{{ url_for('company_blueprint.manage_companies', edit_id=company.id) }}" class="btn btn-sm btn-info me-1">编辑</a>
+                      <form method="POST" action="{{ url_for('company_blueprint.delete_company') }}" style="display:inline;" onsubmit="return confirm('确定要删除公司 \'{{ company.com_name }}\' 吗？');">
                         <input type="hidden" name="company_id_to_delete" value="{{ company.id }}">
                         <button type="submit" name="delete_company" class="btn btn-sm btn-danger">删除</button>
                       </form>
@@ -104,7 +102,68 @@
         </div>
       </div>
     </div>
-    <!-- [ Main Content ] end -->
+    </div>
+</div>
+
+<div class="modal fade" id="addCompanyModal" tabindex="-1" aria-labelledby="addCompanyModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form method="POST" action="{{ url_for('company_blueprint.add_company') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addCompanyModalLabel">添加新公司</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="com_name" class="form-label">公司名称</label>
+              <input type="text" class="form-control" id="com_name" name="com_name" required>
+            </div>
+            <div class="col-md-6">
+              <label for="district" class="form-label">行政区</label>
+              <input type="text" class="form-control" id="district" name="district">
+            </div>
+            <div class="col-md-6">
+              <label for="street" class="form-label">街道</label>
+              <input type="text" class="form-control" id="street" name="street">
+            </div>
+            <div class="col-md-6">
+              <label for="size" class="form-label">规模</label>
+              <input type="number" class="form-control" id="size" name="size">
+            </div>
+            <div class="col-md-6">
+              <label for="type" class="form-label">类型</label>
+              <input type="text" class="form-control" id="type" name="type">
+            </div>
+            <div class="col-md-6">
+              <label for="address" class="form-label">地址</label>
+              <input type="text" class="form-control" id="address" name="address">
+            </div>
+            <div class="col-md-6">
+              <label for="credit_code" class="form-label">信用代码</label>
+              <input type="text" class="form-control" id="credit_code" name="credit_code">
+            </div>
+            <div class="col-md-6">
+              <label for="lon" class="form-label">经度</label>
+              <input type="number" step="any" class="form-control" id="lon" name="lon">
+            </div>
+            <div class="col-md-6">
+              <label for="lat" class="form-label">纬度</label>
+              <input type="number" step="any" class="form-control" id="lat" name="lat">
+            </div>
+            <div class="col-md-6">
+              <label for="sys_org_code" class="form-label">组织编码</label>
+              <input type="text" class="form-control" id="sys_org_code" name="sys_org_code">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+          <button type="submit" class="btn btn-primary">保存公司</button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 

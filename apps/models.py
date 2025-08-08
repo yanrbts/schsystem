@@ -3,6 +3,7 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 
+from typing import Tuple
 from apps import db
 from datetime import datetime
 from sqlalchemy.exc import SQLAlchemyError
@@ -98,7 +99,7 @@ class Company(db.Model):
     com_name = db.Column(db.String(256), nullable=False)
     district = db.Column(db.String(32), nullable=True)
     street = db.Column(db.String(256), nullable=True)
-    size = db.Column(db.String(32), nullable=True)
+    size = db.Column(db.Integer, nullable=True)
     type = db.Column(db.String(32), nullable=True)
     address = db.Column(db.String(1024), nullable=True)
     credit_code = db.Column(db.String(32), nullable=True)
@@ -117,10 +118,20 @@ class Company(db.Model):
     def get_list(cls):
         return cls.query.all()
 
-    def save(self) -> None:
+    def save(self) -> Tuple[bool, str]:
+        """
+        保存公司实例，并在保存前检查公司名是否重复。
+        """
+
+        if self.id is None:
+            existing_company = self.__class__.query.filter_by(com_name=self.com_name).first()
+            if existing_company:
+                return False, "公司已经存在"
+
         try:
             db.session.add(self)
             db.session.commit()
+            return True, "公司保存成功"
         except SQLAlchemyError as e:
             db.session.rollback()
             db.session.close()
