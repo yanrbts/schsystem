@@ -1,0 +1,111 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}公司列表{% endblock %}
+
+{% block content %}
+
+<div class="pc-container">
+  <div class="pc-content">
+    <!-- [ breadcrumb ] start -->
+    <div class="page-header">
+      <div class="page-block">
+        <div class="row align-items-center">
+          <div class="col-md-12">
+            <div class="page-header-title">
+              <h5 class="mb-0">公司列表</h5>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <ul class="breadcrumb mb-0">
+              <li class="breadcrumb-item"><a href="{{ url_for('home_blueprint.index') }}">Home</a></li>
+              <li class="breadcrumb-item"><a href="javascript: void(0)">管理</a></li>
+              <li class="breadcrumb-item" aria-current="page">公司列表</li>
+            </ul>
+          </div>
+          {# 渲染 flash 消息 #}
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              <div class="col-md-12 mt-3">
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }}" role="alert">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+          {% endwith %}
+        </div>
+      </div>
+    </div>
+    <!-- [ breadcrumb ] end -->
+
+    <!-- [ Main Content ] start -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">所有公司</h5>
+            <a href="{{ url_for('device_blueprint.manage_companies') }}" class="btn btn-primary btn-sm">添加新公司</a>
+          </div>
+          <div class="card-body px-0 py-3">
+            {% if companies %}
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>公司名称</th>
+                    <th>行政区</th>
+                    <th>街道</th>
+                    <th>规模</th>
+                    <th>类型</th>
+                    <th>地址</th>
+                    <th>信用代码</th>
+                    <th>经度</th>
+                    <th>纬度</th>
+                    <th>创建时间</th>
+                    <th>更新时间</th>
+                    <th>组织编码</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for company in companies %}
+                  <tr>
+                    <td>{{ company.id }}</td>
+                    <td>{{ company.com_name }}</td>
+                    <td>{{ company.district | default('N/A') }}</td>
+                    <td>{{ company.street | default('N/A') }}</td>
+                    <td>{{ company.size | default('N/A') }}</td>
+                    <td>{{ company.type | default('N/A') }}</td>
+                    <td>{{ company.address | default('N/A') }}</td>
+                    <td>{{ company.credit_code | default('N/A') }}</td>
+                    <td>{{ company.lon | default('N/A') }}</td>
+                    <td>{{ company.lat | default('N/A') }}</td>
+                    <td>{{ company.create_time.strftime('%Y-%m-%d %H:%M:%S') if company.create_time else 'N/A' }}</td>
+                    <td>{{ company.update_time.strftime('%Y-%m-%d %H:%M:%S') if company.update_time else 'N/A' }}</td>
+                    <td>{{ company.sys_org_code | default('N/A') }}</td>
+                    <td>
+                      <a href="{{ url_for('device_blueprint.manage_companies', edit_id=company.id) }}" class="btn btn-sm btn-info me-1">编辑</a>
+                      <form method="POST" action="{{ url_for('device_blueprint.manage_companies') }}" style="display:inline;" onsubmit="return confirm('确定要删除公司 \'{{ company.com_name }}\' 吗？');">
+                        <input type="hidden" name="company_id_to_delete" value="{{ company.id }}">
+                        <button type="submit" name="delete_company" class="btn btn-sm btn-danger">删除</button>
+                      </form>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% else %}
+            <p class="text-center text-muted py-3">没有可用的公司数据。</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- [ Main Content ] end -->
+  </div>
+</div>
+
+{% endblock content %}

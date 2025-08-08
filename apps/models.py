@@ -4,6 +4,7 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 from apps import db
+from datetime import datetime
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker, relationship
 from apps.exceptions.exception import InvalidUsage
@@ -85,3 +86,54 @@ class DevUser(db.Model):
 
     def __repr__(self):
         return f"<User(id={self.id}, username='{self.username}', ip_address='{self.ip_address}', group_id={self.group_id})>"
+    
+class Company(db.Model):
+    __tablename__ = 'companies'
+
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    create_time = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
+    update_time = db.Column(db.DateTime, nullable=True, onupdate=datetime.utcnow)
+    sys_org_code = db.Column(db.String(64), nullable=True)
+
+    com_name = db.Column(db.String(256), nullable=False)
+    district = db.Column(db.String(32), nullable=True)
+    street = db.Column(db.String(256), nullable=True)
+    size = db.Column(db.String(32), nullable=True)
+    type = db.Column(db.String(32), nullable=True)
+    address = db.Column(db.String(1024), nullable=True)
+    credit_code = db.Column(db.String(32), nullable=True)
+
+    lon = db.Column(db.Float(precision=6), nullable=True)
+    lat = db.Column(db.Float(precision=6), nullable=True)
+
+    def __repr__(self):
+        return f"<Company(id={self.id}, com_name={self.com_name})>"
+    
+    @classmethod
+    def find_by_id(cls, _id: int) -> "Product":
+        return cls.query.filter_by(id=_id).first() 
+
+    @classmethod
+    def get_list(cls):
+        return cls.query.all()
+
+    def save(self) -> None:
+        try:
+            db.session.add(self)
+            db.session.commit()
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            db.session.close()
+            error = str(e.__dict__['orig'])
+            raise InvalidUsage(error, 422)
+
+    def delete(self) -> None:
+        try:
+            db.session.delete(self)
+            db.session.commit()
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            db.session.close()
+            error = str(e.__dict__['orig'])
+            raise InvalidUsage(error, 422)
+        return

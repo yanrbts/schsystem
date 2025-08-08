@@ -7,6 +7,12 @@ class MeshAPI:
         self.headers = {
             'Content-Type': 'application/json'
         }
+    
+    def __enter__(self):
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        return False
 
     def _get_request(self, endpoint: str, params: dict = None):
         """
@@ -63,6 +69,28 @@ class MeshAPI:
     def get_config(self):
         """获取设备配置。"""
         return self._get_request("config")
+    
+    def set_config(self, config_data: dict):
+        """
+        设置设备配置。
+        Args:
+            config_data (dict): 要设置的配置数据。
+        Returns:
+            dict: API 响应的 JSON 数据。
+        Raises:
+            requests.exceptions.RequestException: 网络或 HTTP 错误。
+            ValueError: 非 JSON 响应。
+        """
+        url = f"{self.base_url}/config"
+        try:
+            response = requests.post(url, headers=self.headers, json=config_data, timeout=5)
+            response.raise_for_status()
+
+            if response.text:
+                return response.json()
+            return {}
+        except requests.exceptions.RequestException as e:
+            raise e
     
 if __name__ == "__main__":
     # 替换为你的 MimoMesh 设备的实际 IP 地址

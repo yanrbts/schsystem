@@ -54,6 +54,10 @@
               <h5>基本信息与网络配置</h5>
             </div>
             <div class="card-body">
+              <div class="mb-3 d-flex align-items-center"> {# 使用 Flexbox 布局 #}
+                <label class="me-2 mb-0 field-label-fixed-width"><strong>{{ form.name.label }}:</strong></label>
+                <p class="mb-0 text-nowrap overflow-hidden text-truncate">{{ form.name.data | default('N/A') }}</p>
+              </div>
               {# 只读字段：ip - 显示为纯文本 #}
               <div class="mb-3 d-flex align-items-center"> {# 使用 Flexbox 布局 #}
                 <label class="me-2 mb-0 field-label-fixed-width"><strong>{{ form.ip.label }}:</strong></label>
@@ -69,54 +73,21 @@
                 <label class="me-2 mb-0 field-label-fixed-width"><strong>{{ form.nodeNumber.label }}:</strong></label>
                 <p class="mb-0 text-nowrap overflow-hidden text-truncate">{{ form.nodeNumber.data | default('N/A') }}</p>
               </div>
-              {# 可修改字段：silenced - 显示为复选框 #}
+               <div class="mb-3 d-flex align-items-center">
+                <label class="me-2 mb-0 field-label-fixed-width">
+                    <strong>{{ form.freq.label }}:</strong>
+                </label>
+                <p class="mb-0 text-nowrap overflow-hidden text-truncate">{{ (form.freq.data | default(0) / 1000000) | round(2) }} MHz</p>
+              </div>
               <div class="mb-3 d-flex align-items-center">
+                <label class="me-2 mb-0 field-label-fixed-width">
+                    <strong>{{ form.span.label }}:</strong>
+                </label>
+                <p class="mb-0 text-nowrap overflow-hidden text-truncate">{{ form.span.data }}</p>
+              </div>
+               <div class="mb-3 d-flex align-items-center">
                 <label class="me-2 mb-0 field-label-fixed-width"><strong>{{ form.silenced.label }}:</strong></label>
-                {{ form.silenced(class_="form-check-input me-2") }}
-                <span class="form-check-label-inline">{{ "是" if form.silenced.data else "否" }}</span>
-              </div>
-              {# 只读字段：configUpdated - 显示为纯文本 #}
-              <div class="mb-3 d-flex align-items-center">
-                <label class="me-2 mb-0 field-label-fixed-width"><strong>{{ form.configUpdated.label }}:</strong></label>
-                <p class="mb-0 text-nowrap overflow-hidden text-truncate">{{ "是" if form.configUpdated.data else "否" }}</p>
-              </div>
-              {# 可修改字段：operatingFreq #}
-              <div class="mb-3 d-flex align-items-center">
-                <label for="{{ form.operatingFreq.id }}" class="me-2 mb-0 field-label-fixed-width"><strong>{{ form.operatingFreq.label }}:</strong></label>
-                {{ form.operatingFreq(class_="form-control form-control-compact") }} {# 使用紧凑型样式 #}
-              </div>
-              {# 只读字段：operatingCtrlFreqMask - 显示为纯文本 #}
-              <div class="mb-3 d-flex align-items-center">
-                <label class="me-2 mb-0 field-label-fixed-width"><strong>{{ form.operatingCtrlFreqMask.label }}:</strong></label>
-                <p class="mb-0 text-nowrap overflow-hidden text-truncate">{{ form.operatingCtrlFreqMask.data | default('N/A') }}</p>
-              </div>
-              
-              <hr class="my-3">
-              
-              {#<h6 class="mb-3">网络配置详情</h6>#}
-              {# 可修改字段：nwMask #}
-              <div class="mb-3 d-flex align-items-center">
-                <label for="{{ form.nwMask.id }}" class="me-2 mb-0 field-label-fixed-width"><strong>{{ form.nwMask.label }}:</strong></label>
-                {{ form.nwMask(class_="form-control form-control-compact") }} {# 使用紧凑型样式 #}
-              </div>
-              {# 可修改字段：dnsServer #}
-              <div class="mb-3 d-flex align-items-center">
-                <label for="{{ form.dnsServer.id }}" class="me-2 mb-0 field-label-fixed-width"><strong>{{ form.dnsServer.label }}:</strong></label>
-                {{ form.dnsServer(class_="form-control form-control-compact") }} {# 使用紧凑型样式 #}
-              </div>
-              {# 可修改字段：gateway #}
-              <div class="mb-3 d-flex align-items-center">
-                <label for="{{ form.gateway.id }}" class="me-2 mb-0 field-label-fixed-width"><strong>{{ form.gateway.label }}:</strong></label>
-                {{ form.gateway(class_="form-control form-control-compact") }} {# 使用紧凑型样式 #}
-              </div>
-
-              <hr class="my-3">
-
-              {#<h6 class="mb-3">噪音 RSSI 详情</h6> #}
-              {# 噪音 RSSI 下拉菜单 - 可选择 #}
-              <div class="mb-3 d-flex align-items-center">
-                <label for="{{ form.noiseRssiSelect.id }}" class="me-2 mb-0 field-label-fixed-width"><strong>{{ form.noiseRssiSelect.label }}:</strong></label>
-                {{ form.noiseRssiSelect(class_="form-select form-control-compact") }} {# 直接渲染 SelectField #}
+                <p class="mb-0 text-nowrap overflow-hidden text-truncate">{{ "是" if form.silenced.data else "否" }}</p>
               </div>
             </div>
           </div>
@@ -153,68 +124,12 @@
               </div>
             </div>
           </div>
-
-          {# --- 其他状态信息卡片 (直接使用 raw_data 渲染) - 移动到设备状态卡片下方 #}
-          <div class="card">
-            <div class="card-header">
-              <h5>其他状态信息</h5>
-            </div>
-            <div class="card-body">
-              {# 使用 d-flex align-items-center 和 text-nowrap 优化布局 #}
-              <div class="mb-2 d-flex align-items-center">
-                <strong class="me-2 mb-0 field-label-fixed-width">正在讲话的节点:</strong> 
-                <p class="mb-0 text-nowrap overflow-hidden text-truncate flex-grow-1">
-                    {% if raw_data.speakingNodes %}{{ raw_data.speakingNodes | join(', ') }}{% else %}无{% endif %}
-                </p>
-              </div>
-              <div class="mb-2 d-flex align-items-center">
-                <strong class="me-2 mb-0 field-label-fixed-width">链路质量:</strong> 
-                <p class="mb-0 text-nowrap overflow-hidden text-truncate flex-grow-1">
-                    {% if raw_data.linkQuality %}
-                        {% for link in raw_data.linkQuality %}
-                            [{{ link | join(', ') }}]{% if not loop.last %}; {% endif %}
-                        {% endfor %}
-                    {% else %}无{% endif %}
-                </p>
-              </div>
-              <div class="mb-2 d-flex align-items-center">
-                <strong class="me-2 mb-0 field-label-fixed-width">异构链路节点:</strong> 
-                <p class="mb-0 text-nowrap overflow-hidden text-truncate flex-grow-1">
-                    {% if raw_data.heterogeneousLinkNodes %}{{ raw_data.heterogeneousLinkNodes | join(', ') }}{% else %}无{% endif %}
-                </p>
-              </div>
-              <div class="mb-2 d-flex align-items-center">
-                <strong class="me-2 mb-0 field-label-fixed-width">节点 RSSI:</strong> 
-                <p class="mb-0 text-nowrap overflow-hidden text-truncate flex-grow-1">
-                    {% if raw_data.nodesRssi %}{{ raw_data.nodesRssi | join(', ') }}{% else %}无{% endif %}
-                </p>
-              </div>
-              <div class="mb-2 d-flex align-items-center">
-                <strong class="me-2 mb-0 field-label-fixed-width">查询路由:</strong> 
-                <p class="mb-0 text-nowrap overflow-hidden text-truncate flex-grow-1">
-                    {% if raw_data.queryRoutes %}{{ raw_data.queryRoutes | join(', ') }}{% else %}无{% endif %}
-                </p>
-              </div>
-              <div class="mb-2 d-flex align-items-center">
-                <strong class="me-2 mb-0 field-label-fixed-width">传输延迟:</strong> 
-                <p class="mb-0 text-nowrap overflow-hidden text-truncate flex-grow-1">
-                    {% if raw_data.transmissionDelay %}{{ raw_data.transmissionDelay | join(', ') }}{% else %}无{% endif %}
-                </p>
-              </div>
-              <div class="mb-2 d-flex align-items-center">
-                <strong class="me-2 mb-0 field-label-fixed-width">设备列表:</strong> 
-                <p class="mb-0 text-nowrap overflow-hidden text-truncate flex-grow-1">
-                    {% if raw_data.devices %}{{ raw_data.devices | join(', ') }}{% else %}无{% endif %}
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
         
         {# --- 提交按钮 --- #}
         <div class="col-12 mt-4 text-start">
-            {# 替换为硬编码的按钮格式 #}
-            <button type="submit" name="save" class="btn btn-primary shadow px-sm-4">保存修改</button>
+            {# 按钮名称改为 'save'，文本改为 '保存修改' #}
+            <button type="submit" name="save" class="btn btn-primary shadow px-sm-4">修改配置</button>
         </div>
       </form>
 
@@ -235,5 +150,5 @@
 {% endblock content %}
 
 {% block extra_js %}
-{# 如果 device.html 需要特定的 JS 脚本，可以在这里添加 #}
+{# 可以在这里添加 device.html 特有的 JavaScript #}
 {% endblock extra_js %}
